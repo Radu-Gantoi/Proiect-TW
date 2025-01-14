@@ -8,7 +8,7 @@
     
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script type="text/javascript" src="script.js"></script>  
+    <script type="text/javascript" src="script.js"></script>
 </head>
 <body>
     <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle" />
@@ -25,10 +25,18 @@
         </div>
     </div>
 
+    <label for="sidebar-toggle" class="sidebar-toggle-btn">
+        <i class="fas fa-bars"></i> README
+    </label>
+
+    <p id="extra">USER:</p>
+    <input type="text" id="usr">
+    <p id="extra">PASSWORD</p>
+    <input type="text" id="pwd">
+    
+    <button id="login" onclick="getUsers()">Log In</button>
+
     <div class="game-wrapper">
-        <label for="sidebar-toggle" class="sidebar-toggle-btn">
-            <i class="fas fa-bars"></i> README
-        </label>
         <div class="card-grid">
             <div class="card">
                 <div class="card-inner">

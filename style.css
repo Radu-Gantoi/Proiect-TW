@@ -160,3 +160,19 @@ body, html {
         grid-template-columns: repeat(2, 100px);
     }
 }
+
+#pwd, #usr {
+    align-self: center;
+    width: 200px;
+}
+
+#login {
+    align-self: center;
+    width: 80px;
+    margin-top: 40px;
+    border-radius: 20px solid black;
+}
+
+p {
+    align-self: center;
+}
