@@ -1,6 +1,8 @@
 const NUMBER_OF_CARDS = 8;
 let already_clicked = 0;
 let total_flips = 0;
+let prev_r = 38;
+let red, green, blue;
 
 // Continut JSON
 let data;
@@ -137,18 +139,68 @@ async function check(discovered_cards, display_discovered) {
     await sleep(500);
 
     if (discovered_cards.length == NUMBER_OF_CARDS) {
-        alert("Game won!");
-
         if (!isFinite(parseInt(data[user]['score'])) || parseInt(data[user]['score']) > total_flips) {
             data[user]['score'] = total_flips.toString();
             updateData(data);
         }
+
+        alert("Game won!");
     }
+}
+
+function smoothRadius() {
+    let r = Math.max(30, Math.floor(Math.random() * 40));
+
+    while (Math.abs(r - prev_r) > 4) {
+        r = Math.max(30, Math.floor(Math.random() * 40));
+    }
+
+    prev_r = r;
+
+    return r;
+}
+
+function changeBG() {
+    red = Math.floor(Math.random() * 255);
+    green = Math.floor(Math.random() * 255);
+    blue = Math.floor(Math.random() * 255);
+}
+
+function draw(x, y, canvas, ctx) {
+    let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, 'white');
+    gradient.addColorStop(1, `rgb(${red}, ${green}, ${blue})`);
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    gradient = ctx.createRadialGradient(x, y, 0, x, y, 100);
+    gradient.addColorStop(0, 'rgba(255, 255, 0, 0.5)');
+    gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+
+    ctx.beginPath();
+    ctx.arc(x, y, smoothRadius(), 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.closePath();
 }
 
 window.addEventListener('load', function() {
     let game_wrapper = this.document.querySelector('.game-wrapper');
     game_wrapper.style.visibility = 'hidden';
+
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    changeBG();
+    draw(-100, -100, canvas, ctx);
+
+    window.addEventListener('mousemove', (event) => {
+        draw(event.clientX, event.clientY, canvas, ctx);
+    });
 
     // Wait for login...
 
@@ -166,6 +218,7 @@ window.addEventListener('load', function() {
         let card = display_cards[i];
 
         card.addEventListener('click', () => {
+            changeBG();
             const value = cards[i];
 
             card.querySelector('.card-back').textContent = value;
