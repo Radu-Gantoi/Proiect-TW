@@ -3,6 +3,7 @@ let already_clicked = 0;
 let total_flips = 0;
 let prev_r = 38;
 let red, green, blue;
+const available = ['😁', '❤️', '🐽', '🩼', '🦖', '🪼', '🪓'];
 
 // Continut JSON
 let data;
@@ -12,6 +13,23 @@ let password;
 let api_key;
 const bin_id = '6786b789acd3cb34a8cbaf7d';
 const url = `https://api.jsonbin.io/v3/b/${bin_id}`;
+
+function generateDeck() {
+    let deck = [];
+
+    for (let i = 0; i < NUMBER_OF_CARDS / 2; i++) {
+        let idx = Math.floor(Math.random() * available.length);
+
+        while (deck.includes(available[idx])) {
+            idx = Math.floor(Math.random() * available.length);
+        }
+
+        deck.push(available[idx]);
+        deck.push(available[idx]);
+    }
+
+    return deck;
+}
 
 function updateCounter() {
     document.getElementById('current_flips').innerHTML = `Total flips so far: ${total_flips}`;
@@ -215,7 +233,8 @@ window.addEventListener('load', function() {
 
     // Game session
 
-    let cards = ['😁', '❤️', '🐽', '🩼', '🐽', '😁', '🩼', '❤️'];
+
+    let cards = generateDeck();
     cards.sort(() => Math.random() - 0.5);
 
     const display_cards = Array.from(this.document.querySelectorAll('.card'));

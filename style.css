@@ -150,7 +150,7 @@ body, html {
 }
 
 .card-back {
-    background-color: darkslategray;
+    background-color: rgb(99, 44, 10);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -200,4 +200,12 @@ p {
 
 input {
     border-radius: 50px;
+}
+
+#login {
+    border-radius: 8px;
+}
+
+#extra {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
