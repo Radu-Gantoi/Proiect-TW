@@ -9,8 +9,7 @@ let data;
 let user;
 let password;
 
-// Va rog nu furati
-const api_key = '$2a$10$Fn36t5w6bnwEPnl9RlwHFeQBvrcpBvxyH6kn5mjzEMFukmSAacCdy';
+let api_key;
 const bin_id = '6786b789acd3cb34a8cbaf7d';
 const url = `https://api.jsonbin.io/v3/b/${bin_id}`;
 
@@ -19,6 +18,8 @@ function updateCounter() {
 }
 
 function startGame() {
+    document.querySelector('.sidebar-toggle-btn').style.visibility = 'hidden';
+
     let game_wrapper = document.querySelector('.game-wrapper');
     game_wrapper.style.visibility = 'visible';
 
@@ -39,7 +40,7 @@ function startGame() {
     updateCounter();
 }
 
-function getData(usr, pwd) {
+async function getData(usr, pwd) {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.setRequestHeader('X-Master-Key', api_key);
@@ -88,13 +89,13 @@ function getData(usr, pwd) {
     xhr.send();
 }
 
-function updateData(new_data) {
+async function updateData(new_data) {
     const xhr = new XMLHttpRequest();
     xhr.open('PUT', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-Master-Key', api_key);
 
-    xhr.onload = function () {
+    xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
             console.log('Data updated successfully:', xhr.responseText);
         }
@@ -110,11 +111,19 @@ function updateData(new_data) {
     xhr.send(JSON.stringify(new_data));
 }
 
-function getUsers() {
+async function getUsers() {
+    try {
+        const response = await fetch('/api-key');
+        const data = await response.json();
+        api_key = data.apiKey;
+    } catch (error) {
+        console.error('Error fetching API key:', error);
+    }
+
     let usr = document.getElementById('usr').value;
     let pwd = document.getElementById('pwd').value;
 
-    getData(usr, pwd);
+    await getData(usr, pwd);
 }
 
 function sleep(ms) {
@@ -141,7 +150,7 @@ async function check(discovered_cards, display_discovered) {
     if (discovered_cards.length == NUMBER_OF_CARDS) {
         if (!isFinite(parseInt(data[user]['score'])) || parseInt(data[user]['score']) > total_flips) {
             data[user]['score'] = total_flips.toString();
-            updateData(data);
+            await updateData(data);
         }
 
         alert("Game won!");
@@ -218,7 +227,6 @@ window.addEventListener('load', function() {
         let card = display_cards[i];
 
         card.addEventListener('click', () => {
-            changeBG();
             const value = cards[i];
 
             card.querySelector('.card-back').textContent = value;
@@ -226,6 +234,7 @@ window.addEventListener('load', function() {
     
             if (!cardInner.classList.contains('flipped')) {
                 already_clicked++;
+                changeBG();
 
                 if (already_clicked <= 2) {
                     cardInner.classList.add('flipped');
